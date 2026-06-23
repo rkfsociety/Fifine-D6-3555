@@ -1,8 +1,9 @@
-# Renders store screenshots with System.Drawing (no browser required).
-# UTF-8
-
+# Renders store screenshots in 16:9 (1280x720).
 $ErrorActionPreference = "Stop"
 Add-Type -AssemblyName System.Drawing
+
+$W = 1280
+$H = 720
 
 $Root = Split-Path $PSScriptRoot -Parent
 $PluginStatic = Join-Path $Root "com.rkfsociety.d6gifkeys.sdPlugin\static"
@@ -98,7 +99,7 @@ function Draw-Key($g, $x, $y, $size, $gifPath, $bgPath, $title, [bool]$hot, [dou
     $clip.Dispose()
 
     if ($title) {
-        $font = New-Font 9 Bold
+        $font = New-Font ([Math]::Max(9, $size / 11)) Bold
         $sf = New-Object System.Drawing.StringFormat
         $sf.Alignment = [System.Drawing.StringAlignment]::Center
         $sf.LineAlignment = [System.Drawing.StringAlignment]::Far
@@ -112,8 +113,8 @@ function Draw-Key($g, $x, $y, $size, $gifPath, $bgPath, $title, [bool]$hot, [dou
     }
 }
 
-function Draw-SettingsPanel($g) {
-    $labelFont = New-Font 9
+function Draw-SettingsPanel($g, [int]$ox, [int]$oy) {
+    $labelFont = New-Font 10
     $labelBrush = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(255, 154, 154, 154))
     $valueBrush = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(255, 216, 216, 216))
     $boxBrush = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(255, 61, 61, 61))
@@ -121,177 +122,201 @@ function Draw-SettingsPanel($g) {
     $accent = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(255, 78, 187, 228))
 
     $rows = @(
-        @{ L = [string][char]0x0424 + [char]0x0430 + [char]0x0439 + [char]0x043B + " GIF"; V = "demo.gif"; Y = 72 },
-        @{ L = [string][char]0x0438 + [char]0x043B + [char]0x0438 + " URL"; V = "https://example.com/cat.gif"; Y = 110 },
-        @{ L = [string][char]0x0421 + [char]0x043A + [char]0x043E + [char]0x0440 + [char]0x043E + [char]0x0441 + [char]0x0442 + [char]0x044C + " (%)"; V = "150%"; Y = 148; Bar = 132 },
-        @{ L = [string][char]0x0422 + [char]0x0430 + [char]0x0439 + [char]0x043C + [char]0x0438 + [char]0x043D + [char]0x0433; V = [string][char]0x0424 + [char]0x0438 + [char]0x043A + [char]0x0441 + [char]0x002E + " FPS"; Y = 186 },
-        @{ L = "FPS (1-30)"; V = "15"; Y = 224 },
-        @{ L = [string][char]0x0424 + [char]0x043E + [char]0x043D + " (%)"; V = "50%"; Y = 262; Bar = 110 },
-        @{ L = [string][char]0x041F + [char]0x043E + [char]0x0434 + [char]0x043F + [char]0x0438 + [char]0x0441 + [char]0x044C; V = "LIVE"; Y = 300 }
+        @{ L = [string][char]0x0424 + [char]0x0430 + [char]0x0439 + [char]0x043B + " GIF"; V = "demo.gif"; Y = 56 },
+        @{ L = [string][char]0x0438 + [char]0x043B + [char]0x0438 + " URL"; V = "https://example.com/cat.gif"; Y = 96 },
+        @{ L = [string][char]0x0421 + [char]0x043A + [char]0x043E + [char]0x0440 + [char]0x043E + [char]0x0441 + [char]0x0442 + [char]0x044C + " (%)"; V = "150%"; Y = 136; Bar = 150 },
+        @{ L = [string][char]0x0422 + [char]0x0430 + [char]0x0439 + [char]0x043C + [char]0x0438 + [char]0x043D + [char]0x0433; V = [string][char]0x0424 + [char]0x0438 + [char]0x043A + [char]0x0441 + [char]0x002E + " FPS"; Y = 176 },
+        @{ L = "FPS (1-30)"; V = "15"; Y = 216 },
+        @{ L = [string][char]0x0424 + [char]0x043E + [char]0x043D + " (%)"; V = "50%"; Y = 256; Bar = 125 },
+        @{ L = [string][char]0x041F + [char]0x043E + [char]0x0434 + [char]0x043F + [char]0x0438 + [char]0x0441 + [char]0x044C; V = "LIVE"; Y = 296 }
     )
 
     foreach ($row in $rows) {
-        $g.DrawString($row.L, $labelFont, $labelBrush, 16, $row.Y)
+        $y = $oy + $row.Y
+        $g.DrawString($row.L, $labelFont, $labelBrush, ($ox + 20), $y)
         if ($row.Bar) {
-            $g.FillRectangle($boxBrush, 112, $row.Y + 8, 220, 6)
-            $g.FillRectangle($accent, 112, $row.Y + 8, $row.Bar, 6)
-            $g.DrawString($row.V, (New-Font 9 Bold), $accent, 340, $row.Y + 2)
+            $g.FillRectangle($boxBrush, ($ox + 120), ($y + 8), 250, 7)
+            $g.FillRectangle($accent, ($ox + 120), ($y + 8), $row.Bar, 7)
+            $g.DrawString($row.V, (New-Font 10 Bold), $accent, ($ox + 380), ($y + 2))
         } elseif ($row.L -like "*URL*") {
-            Draw-RoundedRect $g $boxBrush $boxPen 112 $row.Y 292 24 0
-            $g.DrawString($row.V, (New-Font 8), $valueBrush, 118, $row.Y + 5)
+            Draw-RoundedRect $g $boxBrush $boxPen ($ox + 120) $y 320 26 0
+            $g.DrawString($row.V, (New-Font 9), $valueBrush, ($ox + 126), ($y + 5))
         } else {
-            Draw-RoundedRect $g $boxBrush $boxPen 112 $row.Y 180 24 0
-            $g.DrawString($row.V, $labelFont, $valueBrush, 120, $row.Y + 5)
+            Draw-RoundedRect $g $boxBrush $boxPen ($ox + 120) $y 200 26 0
+            $g.DrawString($row.V, $labelFont, $valueBrush, ($ox + 128), ($y + 5))
         }
     }
 
     $prevLabel = [string][char]0x041F + [char]0x0440 + [char]0x0435 + [char]0x0432 + [char]0x044C + [char]0x044E
-    $g.DrawString($prevLabel, $labelFont, $labelBrush, 16, 348)
+    $g.DrawString($prevLabel, $labelFont, $labelBrush, ($ox + 20), ($oy + 348))
     $prev = [System.Drawing.Image]::FromFile($demoGif)
-    $g.DrawImage($prev, 112, 348, 126, 126)
+    $g.DrawImage($prev, ($ox + 120), ($oy + 348), 140, 140)
     $prev.Dispose()
-    $g.DrawRectangle($boxPen, 112, 348, 126, 126)
-    Draw-RoundedRect $g $boxBrush $boxPen 250 396 70 24 0
-    $clear = [string][char]0x041E + [char]0x0447 + [char]0x0438 + [char]0x0441 + [char]0x0442 + [char]0x0438 + [char]0x0442 + [char]0x044C
-    $g.DrawString($clear, (New-Font 8), $valueBrush, 258, 401)
+    $g.DrawRectangle($boxPen, ($ox + 120), ($oy + 348), 140, 140)
 }
 
-# 01 settings
-$c = New-Canvas 420 680
+$heading = "GIF " + [char]0x043D + [char]0x0430 + [char]0x0020 + [char]0x043A + [char]0x043D + [char]0x043E + [char]0x043F + [char]0x043A + [char]0x0435
+
+# --- 01 settings (16:9) ---
+$c = New-Canvas $W $H
 $g = $c.G
-$g.Clear([System.Drawing.Color]::FromArgb(255, 45, 45, 45))
+Fill-Gradient $g ([System.Drawing.Rectangle]::FromLTRB(0, 0, $W, $H)) `
+    ([System.Drawing.Color]::FromArgb(255, 28, 28, 34)) `
+    ([System.Drawing.Color]::FromArgb(255, 14, 14, 18))
 
-$badgeBrush = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(255, 78, 187, 228))
-$g.FillRectangle($badgeBrush, 300, 10, 100, 22)
-$dark = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(255, 17, 17, 17))
-$g.DrawString("D6 GIF Keys v1.6", (New-Font 8 Bold), $dark, 308, 13)
+$panelX = 100; $panelY = 70; $panelW = 460; $panelH = 580
+$panelBrush = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(255, 45, 45, 45))
+$panelPen = New-Object System.Drawing.Pen ([System.Drawing.Color]::FromArgb(255, 58, 58, 58))
+Draw-RoundedRect $g $panelBrush $panelPen $panelX $panelY $panelW $panelH 10
 
-$headFont = New-Font 10
+$headFont = New-Font 12
 $headBrush = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(255, 216, 216, 216))
 $linePen = New-Object System.Drawing.Pen ([System.Drawing.Color]::FromArgb(255, 61, 61, 61))
-$g.DrawLine($linePen, 16, 48, 130, 48)
-$heading = "GIF " + [char]0x043D + [char]0x0430 + [char]0x0020 + [char]0x043A + [char]0x043D + [char]0x043E + [char]0x043F + [char]0x043A + [char]0x0435
-$g.DrawString($heading, $headFont, $headBrush, 140, 38)
-$g.DrawLine($linePen, 250, 48, 404, 48)
+$g.DrawLine($linePen, ($panelX + 20), ($panelY + 42), ($panelX + 130), ($panelY + 42))
+$g.DrawString($heading, $headFont, $headBrush, ($panelX + 140), ($panelY + 30))
+$g.DrawLine($linePen, ($panelX + 280), ($panelY + 42), ($panelX + $panelW - 20), ($panelY + 42))
 
-Draw-SettingsPanel $g
+Draw-SettingsPanel $g $panelX $panelY
+
+$titleFont = New-Font 28 Bold
+$subFont = New-Font 14
+$white = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(255, 232, 232, 245))
+$gray = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(255, 122, 122, 136))
+$accent = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(255, 78, 187, 228))
+$g.DrawString("D6 GIF Keys", $titleFont, $white, 640, 120)
+$g.DrawString("Settings panel", $subFont, $accent, 640, 168)
+$g.DrawString("Speed, timing, background opacity", $subFont, $gray, 640, 200)
+
+Draw-Key $g 700 280 160 $demoGif $defaultJpg "LIVE" $true
+Draw-Key $g 880 280 160 $demoGif $defaultJpg "" $true
+
 Save-Canvas $c "01-settings-panel.png" | Out-Null
 
-# 02 keys
-$c = New-Canvas 520 400
+# --- 02 d6 keys (16:9) ---
+$c = New-Canvas $W $H
 $g = $c.G
-Fill-Gradient $g ([System.Drawing.Rectangle]::FromLTRB(0, 0, 520, 400)) `
+Fill-Gradient $g ([System.Drawing.Rectangle]::FromLTRB(0, 0, $W, $H)) `
     ([System.Drawing.Color]::FromArgb(255, 30, 30, 36)) `
     ([System.Drawing.Color]::FromArgb(255, 18, 18, 24))
 
-$titleFont = New-Font 13 Bold
-$subFont = New-Font 9
+$titleFont = New-Font 32 Bold
+$subFont = New-Font 16
 $white = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(255, 232, 232, 245))
 $gray = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(255, 122, 122, 136))
-$g.DrawString("FIFINE AmpliGame D6", $titleFont, $white, 150, 36)
-$sub = "GIF-" + [char]0x043A + [char]0x043B + [char]0x044E + [char]0x0447 + [char]0x0438 + " D6"
-$g.DrawString($sub, $subFont, $gray, 195, 62)
+$cntBrush = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(255, 204, 204, 204))
 
+$g.DrawString("FIFINE AmpliGame D6", $titleFont, $white, 380, 80)
+$sub = "GIF-" + [char]0x043A + [char]0x043B + [char]0x044E + [char]0x0447 + [char]0x0438 + " D6"
+$g.DrawString($sub, $subFont, $gray, 500, 130)
+
+$deckW = 520; $deckH = 360; $deckX = ($W - $deckW) / 2; $deckY = 200
 $deckBrush = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(255, 13, 13, 16))
 $deckPen = New-Object System.Drawing.Pen ([System.Drawing.Color]::FromArgb(255, 42, 42, 50))
-Draw-RoundedRect $g $deckBrush $deckPen 68 92 384 232 16
+Draw-RoundedRect $g $deckBrush $deckPen $deckX $deckY $deckW $deckH 18
 
-$kx = 84; $ky = 108; $gap = 10; $ks = 96
+$ks = 120; $gap = 16
+$gridW = 3 * $ks + 2 * $gap
+$gridH = 2 * $ks + $gap
+$kx = $deckX + ($deckW - $gridW) / 2
+$ky = $deckY + ($deckH - $gridH) / 2
+
 Draw-Key $g $kx $ky $ks $demoGif $defaultJpg "LIVE" $true
 Draw-Key $g ($kx + $ks + $gap) $ky $ks $demoGif $defaultJpg "" $true
-$cntFont = New-Font 22 Bold
-$cntBrush = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(255, 204, 204, 204))
-$g.DrawString("42", $cntFont, $cntBrush, ($kx + 2*($ks+$gap) + 34), ($ky + 32))
-$g.DrawString("URL", $subFont, $gray, ($kx + $ks + $gap), ($ky + 2*($ks+$gap) + 38))
+$g.DrawString("42", (New-Font 32 Bold), $cntBrush, ($kx + 2*($ks+$gap) + 42), ($ky + 38))
+Draw-Key $g $kx ($ky + $ks + $gap) $ks $null $null "" $false 0
+Draw-Key $g ($kx + $ks + $gap) ($ky + $ks + $gap) $ks $null $null "" $false 0
+$g.DrawString("URL", (New-Font 14), $gray, ($kx + 2*($ks+$gap) + 38), ($ky + $ks + $gap + 48))
 
-$legendFont = New-Font 8
+$legendFont = New-Font 12
 $accent = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(255, 78, 187, 228))
 $green = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(255, 126, 217, 87))
-$g.FillEllipse($accent, 180, 348, 8, 8)
+$g.FillEllipse($accent, 520, 620, 10, 10)
 $gifLbl = "GIF-" + [char]0x043A + [char]0x043D + [char]0x043E + [char]0x043F + [char]0x043A + [char]0x0430
-$g.DrawString($gifLbl, $legendFont, $gray, 194, 343)
-$g.FillEllipse($green, 280, 348, 8, 8)
+$g.DrawString($gifLbl, $legendFont, $gray, 538, 614)
+$g.FillEllipse($green, 660, 620, 10, 10)
 $cntLbl = [char]0x0421 + [char]0x0447 + [char]0x0451 + [char]0x0442 + [char]0x0447 + [char]0x0438 + [char]0x043A
-$g.DrawString($cntLbl, $legendFont, $gray, 294, 343)
+$g.DrawString($cntLbl, $legendFont, $gray, 678, 614)
 
 Save-Canvas $c "02-d6-keys.png" | Out-Null
 
-# 03 hero
-$c = New-Canvas 1200 675
+# --- 03 hero (16:9) ---
+$c = New-Canvas $W $H
 $g = $c.G
 $white = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(255, 232, 232, 245))
 $gray = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(255, 122, 122, 136))
 $cntBrush = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(255, 204, 204, 204))
-$labelFont = New-Font 9
+$labelFont = New-Font 10
 $labelBrush = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(255, 154, 154, 154))
 $valueBrush = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(255, 216, 216, 216))
-$headFont = New-Font 10
+$headFont = New-Font 11
 $headBrush = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(255, 216, 216, 216))
 $linePen = New-Object System.Drawing.Pen ([System.Drawing.Color]::FromArgb(255, 61, 61, 61))
-$heading = "GIF " + [char]0x043D + [char]0x0430 + [char]0x0020 + [char]0x043A + [char]0x043D + [char]0x043E + [char]0x043F + [char]0x043A + [char]0x0435
-$subFont = New-Font 9
+$subFont = New-Font 11
 
-Fill-Gradient $g ([System.Drawing.Rectangle]::FromLTRB(0, 0, 1200, 675)) `
+Fill-Gradient $g ([System.Drawing.Rectangle]::FromLTRB(0, 0, $W, $H)) `
     ([System.Drawing.Color]::FromArgb(255, 22, 22, 28)) `
     ([System.Drawing.Color]::FromArgb(255, 10, 10, 14))
 
 if (Test-Path $IconPath) {
     $icon = [System.Drawing.Image]::FromFile($IconPath)
-    Draw-RoundedRect $g $null (New-Object System.Drawing.Pen ([System.Drawing.Color]::FromArgb(255, 51, 51, 51))) 56 170 64 64 14
-    $g.DrawImage($icon, 56, 170, 64, 64)
+    Draw-RoundedRect $g $null (New-Object System.Drawing.Pen ([System.Drawing.Color]::FromArgb(255, 51, 51, 51))) 72 180 72 72 14
+    $g.DrawImage($icon, 72, 180, 72, 72)
     $icon.Dispose()
 }
 
-$heroFont = New-Font 34 Bold
+$heroFont = New-Font 40 Bold
 $emBrush = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(255, 78, 187, 228))
-$g.DrawString("Animated", $heroFont, $white, 56, 250)
-$g.DrawString("GIF", $heroFont, $emBrush, 230, 250)
-$g.DrawString("on D6 Keys", $heroFont, $white, 56, 295)
+$g.DrawString("Animated", $heroFont, $white, 72, 270)
+$g.DrawString("GIF", $heroFont, $emBrush, 280, 270)
+$g.DrawString("on D6 Keys", $heroFont, $white, 72, 325)
 
-$descFont = New-Font 12
-$descRect = New-Object System.Drawing.RectangleF 56, 360, 420, 80
+$descFont = New-Font 14
+$descRect = New-Object System.Drawing.RectangleF 72, 395, 480, 90
 $g.DrawString("D6 GIF Keys for FIFINE D6 and StreamDock. Load a file or URL, tune speed 25-400%, fixed FPS or native GIF timing.", $descFont, $gray, $descRect)
 
 $tags = @("GIF animation", "Speed control", "Counter", "Open URL")
-$tx = 56
+$tx = 72
 foreach ($t in $tags) {
-    $tw = [int]$g.MeasureString($t, $subFont).Width + 24
+    $tw = [int]$g.MeasureString($t, $subFont).Width + 28
     $tagBrush = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(30, 78, 187, 228))
     $tagPen = New-Object System.Drawing.Pen ([System.Drawing.Color]::FromArgb(90, 78, 187, 228))
-    Draw-RoundedRect $g $tagBrush $tagPen $tx 430 $tw 28 14
-    $g.DrawString($t, $subFont, $emBrush, ($tx + 12), 436)
-    $tx += $tw + 10
+    Draw-RoundedRect $g $tagBrush $tagPen $tx 510 $tw 32 14
+    $g.DrawString($t, $subFont, $emBrush, ($tx + 14), 517)
+    $tx += $tw + 12
 }
 
 $deckBrush2 = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(255, 13, 13, 16))
-Draw-RoundedRect $g $deckBrush2 (New-Object System.Drawing.Pen ([System.Drawing.Color]::FromArgb(255, 42, 42, 50))) 620 200 260 190 16
-$ks2 = 72; $g2x = 638; $g2y = 218
+Draw-RoundedRect $g $deckBrush2 (New-Object System.Drawing.Pen ([System.Drawing.Color]::FromArgb(255, 42, 42, 50))) 620 200 300 220 16
+$ks2 = 88; $g2x = 648; $g2y = 230
 Draw-Key $g $g2x $g2y $ks2 $demoGif $defaultJpg "LIVE" $true
-Draw-Key $g ($g2x + $ks2 + 8) $g2y $ks2 $demoGif $defaultJpg "" $true
-$g.DrawString("42", (New-Font 18 Bold), $cntBrush, ($g2x + 2*($ks2+8) + 24), ($g2y + 22))
-$g.DrawString("URL", $subFont, $gray, ($g2x + $ks2 + 8), ($g2y + 2*($ks2+8) + 28))
+Draw-Key $g ($g2x + $ks2 + 12) $g2y $ks2 $demoGif $defaultJpg "" $true
+$g.DrawString("42", (New-Font 22 Bold), $cntBrush, ($g2x + 2*($ks2+12) + 30), ($g2y + 28))
+$g.DrawString("URL", $subFont, $gray, ($g2x + $ks2 + 12), ($g2y + 2*($ks2+12) + 34))
 
 $panelBrush = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(255, 45, 45, 45))
-Draw-RoundedRect $g $panelBrush (New-Object System.Drawing.Pen ([System.Drawing.Color]::FromArgb(255, 58, 58, 58))) 900 160 280 360 8
-$g.DrawLine($linePen, 916, 198, 980, 198)
-$g.DrawString($heading, $headFont, $headBrush, 990, 188)
-$g.DrawLine($linePen, 1080, 198, 1164, 198)
+Draw-RoundedRect $g $panelBrush (New-Object System.Drawing.Pen ([System.Drawing.Color]::FromArgb(255, 58, 58, 58))) 960 160 300 400 10
+$g.DrawLine($linePen, 978, 200, 1048, 200)
+$g.DrawString($heading, $headFont, $headBrush, 1058, 190)
+$g.DrawLine($linePen, 1160, 200, 1240, 200)
 
-$py = 220
+$py = 230
 $simpleRows = @(@("Speed", "150%"), @("Timing", "Fixed FPS"), @("FPS", "15"), @("Background", "50%"), @("Title", "LIVE"))
 foreach ($row in $simpleRows) {
-    $g.DrawString($row[0], $labelFont, $labelBrush, 916, $py)
-    $g.DrawString($row[1], $labelFont, $valueBrush, 1010, $py)
-    $py += 32
+    $g.DrawString($row[0], $labelFont, $labelBrush, 978, $py)
+    $g.DrawString($row[1], $labelFont, $valueBrush, 1080, $py)
+    $py += 36
 }
 $prev2 = [System.Drawing.Image]::FromFile($demoGif)
-$g.DrawImage($prev2, 1010, 380, 80, 80)
+$g.DrawImage($prev2, 1080, 420, 100, 100)
 $prev2.Dispose()
 
 Save-Canvas $c "03-store-hero.png" | Out-Null
 
-Write-Host "Screenshots saved to: $OutDir"
+Write-Host "Screenshots saved to: $OutDir (16:9 ${W}x${H})"
 Get-ChildItem $OutDir -Filter *.png | ForEach-Object {
+    $img = [System.Drawing.Image]::FromFile($_.FullName)
+    $ratio = "{0}:{1}" -f $img.Width, $img.Height
+    $img.Dispose()
     $kb = [math]::Round($_.Length / 1024, 1)
-    Write-Host ("  {0} ({1} KB)" -f $_.Name, $kb)
+    Write-Host ("  {0}  {1}  ({2} KB)" -f $_.Name, $ratio, $kb)
 }
