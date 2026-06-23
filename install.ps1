@@ -1,4 +1,4 @@
-# Installs D6 GIF Keys plugin for Fifine D6
+# Installs D6 GIF Keys plugin for Fifine D6 / StreamDock
 # Usage: .\install.ps1           - copy only
 #        .\install.ps1 -Restart  - copy and restart fifine Control Deck
 
@@ -6,12 +6,14 @@ param([switch]$Restart)
 
 $ErrorActionPreference = "Stop"
 
-$PluginName = "com.fifine.d6.gifkeys.sdPlugin"
-$LegacyPluginName = "com.fifine.d6.starter.sdPlugin"
+$PluginName = "com.rkfsociety.d6gifkeys.sdPlugin"
+$LegacyNames = @(
+    "com.fifine.d6.starter.sdPlugin",
+    "com.fifine.d6.gifkeys.sdPlugin"
+)
 $Source = Join-Path $PSScriptRoot $PluginName
 $TargetDir = Join-Path $env:APPDATA "HotSpot\StreamDock\plugins"
 $Target = Join-Path $TargetDir $PluginName
-$LegacyTarget = Join-Path $TargetDir $LegacyPluginName
 $FifineExe = "C:\Program Files (x86)\fifine Control Deck\fifine Control Deck.exe"
 
 if (-not (Test-Path $Source)) {
@@ -22,9 +24,12 @@ if (-not (Test-Path $TargetDir)) {
     New-Item -ItemType Directory -Path $TargetDir -Force | Out-Null
 }
 
-if (Test-Path $LegacyTarget) {
-    Write-Host "Removing legacy plugin ($LegacyPluginName)..."
-    Remove-Item -Recurse -Force $LegacyTarget
+foreach ($legacy in $LegacyNames) {
+    $legacyPath = Join-Path $TargetDir $legacy
+    if (Test-Path $legacyPath) {
+        Write-Host "Removing legacy plugin ($legacy)..."
+        Remove-Item -Recurse -Force $legacyPath
+    }
 }
 
 if (Test-Path $Target) {
@@ -51,4 +56,4 @@ if ($Restart) {
 }
 
 Write-Host ""
-Write-Host "Done. Category: D6 GIF Keys (ru: GIF-ключи D6)"
+Write-Host "Done. Category: D6 GIF Keys (ru: GIF-klyuchi D6)"

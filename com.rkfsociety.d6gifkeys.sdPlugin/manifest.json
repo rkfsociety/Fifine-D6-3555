@@ -1,7 +1,7 @@
 {
   "Actions": [
     {
-      "Icon": "static/CH.png",
+      "Icon": "static/action-gif.png",
       "Name": "GIF Button",
       "States": [
         {
@@ -27,11 +27,11 @@
       "UserTitleEnabled": true,
       "SupportedInMultiActions": false,
       "Tooltip": "Animated GIF on D6 key",
-      "UUID": "com.fifine.d6.gifkeys.gifbutton",
+      "UUID": "com.rkfsociety.d6gifkeys.gifbutton",
       "PropertyInspectorPath": "propertyInspector/gifbutton/index.html"
     },
     {
-      "Icon": "static/CH.png",
+      "Icon": "static/action-counter.png",
       "Name": "Counter",
       "States": [
         {
@@ -47,11 +47,11 @@
       "UserTitleEnabled": true,
       "SupportedInMultiActions": false,
       "Tooltip": "Increment number on each press",
-      "UUID": "com.fifine.d6.gifkeys.counter",
+      "UUID": "com.rkfsociety.d6gifkeys.counter",
       "PropertyInspectorPath": "propertyInspector/counter/index.html"
     },
     {
-      "Icon": "static/CH.png",
+      "Icon": "static/action-url.png",
       "Name": "Open URL",
       "States": [
         {
@@ -67,20 +67,20 @@
       "UserTitleEnabled": true,
       "SupportedInMultiActions": false,
       "Tooltip": "Open URL in browser",
-      "UUID": "com.fifine.d6.gifkeys.openurl",
+      "UUID": "com.rkfsociety.d6gifkeys.openurl",
       "PropertyInspectorPath": "propertyInspector/openurl/index.html"
     }
   ],
-  "PUUID": "D6GifKeys",
+  "PUUID": "com.rkfsociety.d6gifkeys",
   "SDKVersion": 1,
-  "Author": "roman",
+  "Author": "rkfsociety",
   "Name": "D6 GIF Keys",
-  "Icon": "static/CH.png",
+  "Icon": "static/icon.png",
   "CodePath": "plugin/index.html",
-  "Description": "Animated GIF keys, counter and open URL for Fifine D6",
+  "Description": "Animated GIF on stream deck keys for FIFINE D6 and StreamDock. Adjustable speed, FPS or native GIF timing, counter and open URL.",
   "Category": "D6 GIF Keys",
-  "CategoryIcon": "static/CH.png",
-  "Version": "1.5.0",
+  "CategoryIcon": "static/category.png",
+  "Version": "1.6.0",
   "URL": "https://github.com/rkfsociety/Fifine-D6-GifKeys",
   "OS": [
     {
@@ -89,7 +89,7 @@
     },
     {
       "Platform": "windows",
-      "MinimumVersion": "7"
+      "MinimumVersion": "10"
     }
   ],
   "Software": {

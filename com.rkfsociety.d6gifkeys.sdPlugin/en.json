@@ -1,0 +1,18 @@
+{
+  "Name": "D6 GIF Keys",
+  "Description": "Animated GIF on stream deck keys for FIFINE D6 and StreamDock. Speed control, counter, open URL.",
+  "com.rkfsociety.d6gifkeys.counter": {
+    "Name": "Counter",
+    "Tooltip": "Increments a number on each key press"
+  },
+  "com.rkfsociety.d6gifkeys.openurl": {
+    "Name": "Open URL",
+    "Tooltip": "Opens the configured URL in your browser"
+  },
+  "com.rkfsociety.d6gifkeys.gifbutton": {
+    "Name": "GIF Button",
+    "Tooltip": "Shows an animated GIF on the D6 key with adjustable playback speed"
+  },
+  "Category": "D6 GIF Keys",
+  "Localization": {}
+}

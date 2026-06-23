@@ -1,6 +1,6 @@
 /// <reference path="./utils/common.js" />
 
-const plugin = new Plugins("fifine-d6-gifkeys");
+const plugin = new Plugins("rkfsociety-d6gifkeys");
 
 function formatCounterTitle(count) {
     return String(count);

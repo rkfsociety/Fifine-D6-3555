@@ -1,0 +1,18 @@
+{
+  "Name": "GIF-ключи D6",
+  "Description": "Анимированные GIF на кнопках FIFINE D6 и StreamDock. Настройка скорости, счётчик, открытие ссылок.",
+  "com.rkfsociety.d6gifkeys.counter": {
+    "Name": "Счётчик",
+    "Tooltip": "Увеличивает число на кнопке при каждом нажатии"
+  },
+  "com.rkfsociety.d6gifkeys.openurl": {
+    "Name": "Открыть URL",
+    "Tooltip": "Открывает указанный адрес в браузере"
+  },
+  "com.rkfsociety.d6gifkeys.gifbutton": {
+    "Name": "GIF-кнопка",
+    "Tooltip": "Показывает анимированный GIF на кнопке D6 с настройкой скорости"
+  },
+  "Category": "GIF-ключи D6",
+  "Localization": {}
+}
