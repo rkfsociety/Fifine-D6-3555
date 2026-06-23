@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <title>D6 GIF Keys — keys</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      width: 520px; height: 400px;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: linear-gradient(145deg, #1e1e24 0%, #121218 100%);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 24px;
+    }
+    h1 {
+      color: #e8e8e8; font-size: 14px; font-weight: 600;
+      margin-bottom: 6px; letter-spacing: .3px;
+    }
+    .sub { color: #7a7a88; font-size: 11px; margin-bottom: 20px; }
+    .deck {
+      display: grid;
+      grid-template-columns: repeat(3, 96px);
+      grid-template-rows: repeat(2, 96px);
+      gap: 10px;
+      padding: 16px;
+      background: #0d0d10;
+      border-radius: 16px;
+      border: 1px solid #2a2a32;
+      box-shadow: 0 12px 40px rgba(0,0,0,.45);
+    }
+    .key {
+      width: 96px; height: 96px; border-radius: 12px;
+      background: #252530; border: 2px solid #3a3a48;
+      overflow: hidden; position: relative;
+      display: flex; align-items: flex-end; justify-content: center;
+    }
+    .key.active {
+      border-color: #4ebbe4;
+      box-shadow: 0 0 12px rgba(78,187,228,.35);
+    }
+    .key img.media {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: contain; z-index: 1;
+    }
+    .key .bg {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; opacity: .5; z-index: 0;
+    }
+    .key .title {
+      position: relative; z-index: 2;
+      font-size: 10px; font-weight: 700; color: #fff;
+      text-shadow: 0 1px 3px #000; padding-bottom: 6px;
+    }
+    .key.empty { opacity: .35; }
+    .key .icon { font-size: 28px; opacity: .4; margin: auto; }
+    .legend {
+      margin-top: 16px; display: flex; gap: 16px; font-size: 10px; color: #888;
+    }
+    .legend span { display: flex; align-items: center; gap: 6px; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; }
+    .dot.gif { background: #4ebbe4; }
+    .dot.counter { background: #7ed957; }
+  </style>
+</head>
+<body>
+  <h1>FIFINE AmpliGame D6</h1>
+  <p class="sub">GIF-ключи D6 · анимация на физических кнопках</p>
+  <div class="deck">
+    <div class="key active">
+      <img class="bg" src="../com.rkfsociety.d6gifkeys.sdPlugin/static/default.jpg" alt="">
+      <img class="media" src="../com.rkfsociety.d6gifkeys.sdPlugin/static/demo.gif" alt="">
+      <span class="title">LIVE</span>
+    </div>
+    <div class="key active">
+      <img class="bg" src="../com.rkfsociety.d6gifkeys.sdPlugin/static/default.jpg" alt="">
+      <img class="media" src="../com.rkfsociety.d6gifkeys.sdPlugin/static/demo.gif" alt="">
+    </div>
+    <div class="key">
+      <span class="icon" style="font-size:22px;font-weight:700;color:#ccc;">42</span>
+    </div>
+    <div class="key empty"><span class="icon">+</span></div>
+    <div class="key empty"><span class="icon">+</span></div>
+    <div class="key">
+      <span class="icon" style="font-size:11px;color:#aaa;">URL</span>
+    </div>
+  </div>
+  <div class="legend">
+    <span><i class="dot gif"></i> GIF-кнопка</span>
+    <span><i class="dot counter"></i> Счётчик</span>
+  </div>
+</body>
+</html>

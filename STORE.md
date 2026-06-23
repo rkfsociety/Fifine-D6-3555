@@ -36,7 +36,7 @@ dist/com.rkfsociety.d6gifkeys.sdPlugin.zip
 - [x] Локализация: `en.json`, `ru.json`, `zh_CN.json`
 - [x] Лицензия MIT (`LICENSE`) и сторонние библиотеки (`THIRD_PARTY_NOTICES.md`)
 - [ ] Протестировать zip: распаковать в `%APPDATA%\HotSpot\StreamDock\plugins\`, перезапустить Fifine
-- [ ] Подготовить 1–3 скриншота настроек / кнопки с GIF (для карточки в магазине)
+- [x] Скриншоты: `screenshots/output/` (см. [screenshots/README.md](screenshots/README.md))
 - [ ] Заполнить описание на Space Platform (тексты ниже)
 
 ## Тексты для карточки магазина

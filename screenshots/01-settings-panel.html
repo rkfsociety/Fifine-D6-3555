@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <title>D6 GIF Keys — settings</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      width: 420px;
+      min-height: 680px;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      font-size: 11px;
+      background: #2d2d2d;
+      color: #9a9a9a;
+      padding: 12px 0;
+    }
+    .heading {
+      display: flex; align-items: center; color: #d8d8d8;
+      font-size: 11px; margin: 8px 16px;
+    }
+    .heading::before, .heading::after {
+      content: ""; flex: 1; height: 1px; background: #3d3d3d; margin: 0 12px;
+    }
+    .item {
+      display: flex; align-items: center; min-height: 34px;
+      padding: 2px 16px; gap: 8px;
+    }
+    .label { width: 88px; flex-shrink: 0; color: #9a9a9a; }
+    .value { flex: 1; color: #d8d8d8; }
+    input[type=text], input[type=url], input[type=number], select {
+      width: 100%; height: 26px; background: #3d3d3d; border: 1px solid #969696;
+      color: #d8d8d8; padding: 0 8px; font-size: 11px;
+    }
+    input[type=range] { width: 100%; accent-color: #4ebbe4; }
+    .file-btn {
+      display: inline-block; padding: 4px 12px; background: #3d3d3d;
+      border: 1px solid #969696; color: #d8d8d8; font-size: 11px;
+    }
+    .preview-wrap { display: flex; align-items: center; gap: 10px; }
+    #preview {
+      width: 126px; height: 126px; object-fit: contain;
+      background: rgba(45,45,45,.5); border-radius: 8px; border: 1px solid #444;
+    }
+    .btn {
+      padding: 4px 12px; background: #3d3d3d; border: 1px solid #969696;
+      color: #d8d8d8; font-size: 11px;
+    }
+    .hint { font-size: 10px; line-height: 1.45; opacity: .85; }
+    .badge {
+      position: fixed; top: 8px; right: 8px;
+      background: #4ebbe4; color: #111; font-weight: 600;
+      padding: 4px 10px; border-radius: 4px; font-size: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="badge">D6 GIF Keys v1.6</div>
+  <div class="heading">GIF на кнопке</div>
+
+  <div class="item">
+    <div class="label">Файл GIF</div>
+    <div class="value"><span class="file-btn">Выберите файл</span> demo.gif</div>
+  </div>
+  <div class="item">
+    <div class="label">или URL</div>
+    <div class="value"><input type="url" value="https://example.com/cat.gif" readonly></div>
+  </div>
+  <div class="item">
+    <div class="label">Скорость (%)</div>
+    <div class="value" style="display:flex;align-items:center;gap:8px;">
+      <input type="range" min="25" max="400" value="150" readonly>
+      <span style="min-width:40px;text-align:right;color:#4ebbe4;">150%</span>
+    </div>
+  </div>
+  <div class="item">
+    <div class="label">Тайминг</div>
+    <div class="value">
+      <select readonly><option>Фиксированный FPS</option></select>
+    </div>
+  </div>
+  <div class="item">
+    <div class="label">FPS (1–30)</div>
+    <div class="value"><input type="number" value="15" readonly></div>
+  </div>
+  <div class="item">
+    <div class="label">Фон (%)</div>
+    <div class="value"><input type="range" min="0" max="100" value="50" readonly></div>
+  </div>
+  <div class="item">
+    <div class="label">Подпись</div>
+    <div class="value"><input type="text" value="LIVE" readonly></div>
+  </div>
+  <div class="item">
+    <div class="label">Превью</div>
+    <div class="value preview-wrap">
+      <img id="preview" src="../com.rkfsociety.d6gifkeys.sdPlugin/static/demo.gif" alt="preview">
+      <button class="btn" type="button">Очистить</button>
+    </div>
+  </div>
+  <div class="item">
+    <div class="label">Совет</div>
+    <div class="value hint">Лучше GIF до 1–2 МБ. На физической кнопке D6 анимация идёт через снимки кадров.</div>
+  </div>
+</body>
+</html>

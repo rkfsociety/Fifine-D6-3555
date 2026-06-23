@@ -59,6 +59,8 @@ cd "F:\github\Fifine-D6-GifKeys"
 
 Подробный чеклист, тексты для карточки и контакты модерации — в **[STORE.md](STORE.md)**.
 
+Скриншоты для магазина: **`screenshots/output/`** (пересоздать: `.\screenshots\render-screenshots.ps1`).
+
 ## Структура проекта
 
 ```
